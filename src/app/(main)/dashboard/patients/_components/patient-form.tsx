@@ -9,6 +9,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createPatient, updatePatient } from "../_services/patient-service";
+import { getAuthCookie } from "@/lib/auth-cookies";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -38,8 +39,8 @@ export function PatientForm({
 
   const onSubmit = async (values: any) => {
     try {
-      const token = localStorage.getItem("auth-token");
-      if (!token) throw new Error("Token bulunamadı");
+      const token = getAuthCookie();
+    if (!token) return;
 
       if (patient) {
         await updatePatient(patient.id, values, token);

@@ -2,8 +2,9 @@ import axios from "axios";
 import { APP_CONFIG } from "@/config/app-config";
 import { LoginFormData, RegisterFormData } from "./auth-schemas";
 
+// Axios instance targeting the auth endpoints of the backend
 const api = axios.create({
-  baseURL: APP_CONFIG.api.baseUrl,
+  baseURL: APP_CONFIG.api.baseUrl2,
   headers: {
     "Content-Type": "application/json",
   },

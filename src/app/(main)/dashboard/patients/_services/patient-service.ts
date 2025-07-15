@@ -1,4 +1,6 @@
-const BASE_URL = "https://localhost:5001/api/patients";
+import { APP_CONFIG } from "@/config/app-config";
+
+const BASE_URL = `${APP_CONFIG.api.baseUrl}/patients`;
 
 export async function getPatients(token: string) {
   const res = await fetch(`${BASE_URL}?PageNumber=1&PageSize=10`, {
@@ -34,11 +36,10 @@ export async function updatePatient(id: string, data: any, token: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(Object.assign({}, data, { id })),
   });
 
-  if (!res.ok) throw new Error("Danışan güncellenemedi");
-  return res.json();
+  return;
 }
 
 export async function deletePatient(id: string, token: string) {

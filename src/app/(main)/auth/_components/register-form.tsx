@@ -33,11 +33,10 @@ export function RegisterForm() {
     setError(null);
     try {
       const response = await authService.register(data);
-      // Eğer response varsa ve status 200 ise login sayfasına yönlendir
-      // Axios default olarak response.status içerir
-      if ((response && (response as any).status === 200) || (typeof response === 'object' && !response?.accessToken)) {
-        toast.success("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
-        router.push("/auth/login");
+      if (response.success !== false && response.accessToken) {
+        setAuthCookie(response.accessToken, response.refreshToken, response.tokenType, response.expiresIn);
+        toast.success("Kayıt başarılı! Yönlendiriliyorsunuz...");
+        router.push("/dashboard");
       } else {
         setError(response?.message || "Kayıt oluşturulamadı");
       }
@@ -51,9 +50,7 @@ export function RegisterForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {error && (
-          <div className="rounded-md bg-red-100 px-3 py-2 text-sm text-red-700">{error}</div>
-        )}
+        {error && <div className="rounded-md bg-red-100 px-3 py-2 text-sm text-red-700">{error}</div>}
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -62,7 +59,14 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input id="firstName" type="text" placeholder="First Name" autoComplete="given-name" {...field} disabled={isLoading} />
+                  <Input
+                    id="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    autoComplete="given-name"
+                    {...field}
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -75,7 +79,14 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input id="lastName" type="text" placeholder="Last Name" autoComplete="family-name" {...field} disabled={isLoading} />
+                  <Input
+                    id="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    autoComplete="family-name"
+                    {...field}
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,7 +100,14 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input id="email" type="email" placeholder="you@example.com" autoComplete="email" {...field} disabled={isLoading} />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,7 +120,14 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input id="password" type="password" placeholder="••••••••" autoComplete="new-password" {...field} disabled={isLoading} />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,7 +140,14 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input id="confirmPassword" type="password" placeholder="••••••••" autoComplete="new-password" {...field} disabled={isLoading} />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

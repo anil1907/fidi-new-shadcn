@@ -12,6 +12,7 @@ export const APP_CONFIG = {
       "Fidi Admin is a modern, open-source dashboard starter template built with Next.js 15, Tailwind CSS v4, and shadcn/ui. Perfect for SaaS apps, admin panels, and internal tools—fully customizable and production-ready.",
   },
   api: {
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000',
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:5001/api',
+    baseUrl2: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:5001',
   },
 };
