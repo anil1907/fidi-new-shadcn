@@ -10,21 +10,24 @@ const api = axios.create({
 });
 
 export interface AuthResponse {
-  success: boolean;
-  message: string;
-  token?: string;
+  success?: boolean; // opsiyonel, backend döndürmüyor olabilir
+  message?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  tokenType?: string;
   user?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
+    id?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
   };
 }
 
 export const authService = {
   async login(data: LoginFormData): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>("/auth/login", data);
+      const response = await api.post<AuthResponse>("/login", data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
@@ -36,7 +39,7 @@ export const authService = {
 
   async register(data: RegisterFormData): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>("/auth/register", data);
+      const response = await api.post<AuthResponse>("/register", data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {

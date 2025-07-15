@@ -23,12 +23,12 @@ export const useAuth = () => {
     removeAuthCookie();
     setToken(null);
     setIsAuthenticated(false);
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   const requireAuth = () => {
     if (isAuthenticated === false) {
-      router.push("/login");
+      router.push("/auth/login");
     }
   };
 
