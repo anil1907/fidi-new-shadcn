@@ -49,4 +49,16 @@ export const authService = {
       throw new Error("Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.");
     }
   },
+
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    try {
+      const response = await api.post<AuthResponse>("/refresh", { refreshToken });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error("Token yenileme başarısız. Lütfen tekrar giriş yapın.");
+    }
+  },
 };

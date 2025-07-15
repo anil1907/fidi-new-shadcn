@@ -39,7 +39,12 @@ export async function updatePatient(id: string, data: any, token: string) {
     body: JSON.stringify(Object.assign({}, data, { id })),
   });
 
-  return;
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Danışan güncellenemedi");
+  }
+
+  return res.json();
 }
 
 export async function deletePatient(id: string, token: string) {
