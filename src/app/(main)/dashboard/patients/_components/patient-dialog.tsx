@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PatientForm } from "./patient-form";
 import { toast } from "sonner";
-import { deletePatient } from "../_services/patient-service";
-import { getAuthCookie } from "@/lib/auth-cookies";
+import { usePatientMutations } from "@/hooks/use-patients";
 
 interface Props {
   open: boolean;
@@ -20,14 +13,13 @@ interface Props {
 }
 
 export function PatientDialog({ open, onOpenChange, patient }: Props) {
+  const { remove } = usePatientMutations();
+
   const handleDelete = async () => {
     if (!patient?.id) return;
 
     try {
-      const token = getAuthCookie();
-      if (!token) return;
-
-      await deletePatient(patient.id, token);
+      await remove.mutateAsync(patient.id);
       toast.success("Danışan silindi");
       onOpenChange(false);
     } catch (err: any) {
@@ -46,11 +38,7 @@ export function PatientDialog({ open, onOpenChange, patient }: Props) {
 
         {patient && (
           <DialogFooter className="justify-start">
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              className="mt-2"
-            >
+            <Button variant="destructive" onClick={handleDelete} className="mt-2">
               Danışanı Sil
             </Button>
           </DialogFooter>
