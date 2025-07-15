@@ -36,11 +36,10 @@ export async function updatePatient(id: string, data: any, token: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(Object.assign({}, data, { id })),
   });
 
-  if (!res.ok) throw new Error("Danışan güncellenemedi");
-  return res.json();
+  return;
 }
 
 export async function deletePatient(id: string, token: string) {

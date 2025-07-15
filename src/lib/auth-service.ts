@@ -4,7 +4,7 @@ import { LoginFormData, RegisterFormData } from "./auth-schemas";
 
 // Axios instance targeting the auth endpoints of the backend
 const api = axios.create({
-  baseURL: `${APP_CONFIG.api.baseUrl}/auth`,
+  baseURL: APP_CONFIG.api.baseUrl2,
   headers: {
     "Content-Type": "application/json",
   },

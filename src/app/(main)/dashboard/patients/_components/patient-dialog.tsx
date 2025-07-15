@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PatientForm } from "./patient-form";
 import { toast } from "sonner";
 import { deletePatient } from "../_services/patient-service";
+import { getAuthCookie } from "@/lib/auth-cookies";
 
 interface Props {
   open: boolean;
@@ -23,8 +24,8 @@ export function PatientDialog({ open, onOpenChange, patient }: Props) {
     if (!patient?.id) return;
 
     try {
-      const token = localStorage.getItem("auth-token");
-      if (!token) throw new Error("Token eksik");
+      const token = getAuthCookie();
+      if (!token) return;
 
       await deletePatient(patient.id, token);
       toast.success("Danışan silindi");
