@@ -3,8 +3,14 @@
 import { useState } from "react";
 import { PatientCard } from "./patient-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { usePatients } from "@/hooks/use-patients";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 
 export interface Patient {
   id: string;
@@ -28,22 +34,35 @@ export function PatientCardGrid() {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {patients.map((patient) => (
+        {patients.map((patient: Patient) => (
           <PatientCard key={patient.id} patient={patient} />
         ))}
       </div>
-      <div className="mt-4 flex justify-center gap-2">
-        <Button variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-          Önceki
-        </Button>
-        <Button
-          variant="outline"
-          disabled={data && page >= (data.totalPages ?? page)}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Sonraki
-        </Button>
-      </div>
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setPage((p) => Math.max(1, p - 1));
+              }}
+              className={page === 1 ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (!data || page >= (data.totalPages ?? page)) return;
+                setPage((p) => p + 1);
+              }}
+              className={data && page >= (data.totalPages ?? page) ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   );
 }

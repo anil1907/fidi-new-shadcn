@@ -7,7 +7,9 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { PatientDialog } from "./patient-dialog";
 import { Patient } from "./patient-card-grid";
 import { usePatientMutations } from "@/hooks/use-patients";
-import { toast } from "sonner";
+import { ConfirmDelete } from "@/components/confirm-delete";
+import { notifySuccess, notifyError } from "@/lib/toast";
+import { Trash2, Eye } from "lucide-react";
 
 export function PatientCard({ patient }: { patient: Patient }) {
   const [open, setOpen] = useState(false);
@@ -15,17 +17,31 @@ export function PatientCard({ patient }: { patient: Patient }) {
 
   const handleDelete = async () => {
     if (!patient.id) return;
-    if (!window.confirm("Danışanı silmek istediğinize emin misiniz?")) return;
     try {
       await remove.mutateAsync(patient.id);
-      toast.success("Danışan silindi");
+      notifySuccess("Danışan silindi");
     } catch (err: any) {
-      toast.error(err.message ?? "Silme işlemi başarısız");
+      notifyError(err.message ?? "Silme işlemi başarısız");
     }
   };
 
   return (
-    <Card className="flex h-full flex-col justify-between shadow-sm">
+    <Card className="relative flex h-full flex-col justify-between shadow-sm">
+      <div className="absolute right-2 top-2 flex gap-2">
+        <ConfirmDelete onConfirm={handleDelete}>
+          <Button size="icon" variant="ghost">
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </ConfirmDelete>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button size="icon" variant="outline">
+              <Eye className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <PatientDialog open={open} onOpenChange={setOpen} patient={patient} />
+        </Dialog>
+      </div>
       <CardHeader>
         <CardTitle className="text-lg">{patient.name}</CardTitle>
         <p className="text-muted-foreground text-xs">{patient.email}</p>
@@ -38,20 +54,6 @@ export function PatientCard({ patient }: { patient: Patient }) {
 
       <CardFooter className="text-muted-foreground flex items-center justify-between text-sm">
         <span>Son Ziyaret: {patient.lastVisitFormatted}</span>
-
-        <div className="flex gap-2">
-          <Button size="sm" variant="destructive" onClick={handleDelete}>
-            Sil
-          </Button>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" variant="outline">
-                Detay
-              </Button>
-            </DialogTrigger>
-            <PatientDialog open={open} onOpenChange={setOpen} patient={patient} />
-          </Dialog>
-        </div>
       </CardFooter>
     </Card>
   );

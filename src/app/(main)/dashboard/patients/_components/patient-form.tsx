@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/lib/toast";
 import { usePatientMutations } from "@/hooks/use-patients";
 
 const schema = z.object({
@@ -36,15 +36,15 @@ export function PatientForm({ patient, onSuccess }: { patient?: any; onSuccess?:
     try {
       if (patient) {
         await update.mutateAsync({ id: patient.id, data: values });
-        toast.success("Danışan güncellendi");
+        notifySuccess("Danışan güncellendi");
       } else {
         await create.mutateAsync(values);
-        toast.success("Danışan eklendi");
+        notifySuccess("Danışan eklendi");
       }
 
       onSuccess?.();
     } catch (err: any) {
-      toast.error(err.message ?? "İşlem başarısız");
+      notifyError(err.message ?? "İşlem başarısız");
     }
   };
 
