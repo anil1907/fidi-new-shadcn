@@ -20,7 +20,7 @@ export interface AuthResponse {
 export const authService = {
   async login(data: LoginFormData): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>("/login", data);
+      const response = await api.post<AuthResponse>("/auth/login", data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
@@ -32,7 +32,7 @@ export const authService = {
 
   async register(data: RegisterFormData): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>("/register", data);
+      const response = await api.post<AuthResponse>("/auth/register", data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
@@ -44,7 +44,7 @@ export const authService = {
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>('/refresh', {
+      const response = await api.post<AuthResponse>('/auth/refresh', {
         refreshToken,
       });
       return response.data;

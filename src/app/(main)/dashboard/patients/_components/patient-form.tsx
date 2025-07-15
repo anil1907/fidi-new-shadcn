@@ -9,6 +9,8 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createPatient, updatePatient } from "../_services/patient-service";
+import { useRouter } from "next/navigation";
+
 
 const schema = z.object({
   name: z.string().min(2),
@@ -25,6 +27,8 @@ export function PatientForm({
   patient?: any;
   onSuccess?: () => void;
 }) {
+    const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: patient ?? {
@@ -46,6 +50,7 @@ export function PatientForm({
         toast.success("Danışan eklendi");
       }
 
+      router.refresh();
       onSuccess?.();
     } catch (err: any) {
       toast.error(err.message ?? "İşlem başarısız");
