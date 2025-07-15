@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginSchema, LoginFormData } from "@/lib/auth-schemas";
+import { loginSchema } from "@/lib/auth-schemas";
 import { authService } from "@/lib/auth-service";
-import { setAuthCookie } from "@/lib/auth-cookies";
+import { tokenService } from "@/lib/token-service";
 
 const FormSchema = loginSchema.extend({
   remember: z.boolean().optional(),
@@ -41,13 +41,13 @@ export function LoginForm() {
         email: data.email,
         password: data.password,
       });
-      if (response.success !== false && response.accessToken) {
-        setAuthCookie(
-          response.accessToken,
-          response.refreshToken,
-          response.tokenType,
-          response.expiresIn
-        );
+      if (response.success !== false && response.accessToken && response.refreshToken) {
+        tokenService.setTokens({
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+          tokenType: response.tokenType,
+          expiresIn: response.expiresIn,
+        });
         toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
         router.push("/dashboard");
       } else {

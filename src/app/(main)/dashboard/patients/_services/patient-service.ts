@@ -1,54 +1,23 @@
-const BASE_URL = "https://localhost:5001/api/patients";
+import api from '@/lib/axios';
 
-export async function getPatients(token: string) {
-  const res = await fetch(`${BASE_URL}?PageNumber=1&PageSize=10`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+const BASE_URL = '/patients';
 
-  if (!res.ok) throw new Error("Danışanlar alınamadı");
-  return res.json();
+export async function getPatients() {
+  const res = await api.get(`${BASE_URL}`, { params: { PageNumber: 1, PageSize: 10 } });
+  return res.data;
 }
 
-export async function createPatient(data: any, token: string) {
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) throw new Error("Danışan eklenemedi");
-  return res.json();
+export async function createPatient(data: any) {
+  const res = await api.post(BASE_URL, data);
+  return res.data;
 }
 
-export async function updatePatient(id: string, data: any, token: string) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) throw new Error("Danışan güncellenemedi");
-  return res.json();
+export async function updatePatient(id: string, data: any) {
+  const res = await api.put(`${BASE_URL}/${id}`, data);
+  return res.data;
 }
 
-export async function deletePatient(id: string, token: string) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) throw new Error("Danışan silinemedi");
+export async function deletePatient(id: string) {
+  await api.delete(`${BASE_URL}/${id}`);
   return true;
 }

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getPatients } from "../_services/patient-service";
 import { PatientCard } from "./patient-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getAuthCookie } from "@/lib/auth-cookies";
 
 export interface Patient {
   id: string;
@@ -20,10 +19,7 @@ export function PatientCardGrid() {
   const [patients, setPatients] = useState<Patient[] | null>(null);
 
   useEffect(() => {
-    const token = getAuthCookie();
-    if (!token) return;
-
-    getPatients(token).then((res) => setPatients(res.items));
+    getPatients().then((res) => setPatients(res.items));
   }, []);
 
   if (!patients) return <Skeleton className="h-[400px] w-full" />;

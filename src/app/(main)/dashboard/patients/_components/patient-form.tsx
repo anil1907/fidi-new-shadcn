@@ -38,14 +38,11 @@ export function PatientForm({
 
   const onSubmit = async (values: any) => {
     try {
-      const token = localStorage.getItem("auth-token");
-      if (!token) throw new Error("Token bulunamadı");
-
       if (patient) {
-        await updatePatient(patient.id, values, token);
+        await updatePatient(patient.id, values);
         toast.success("Danışan güncellendi");
       } else {
-        await createPatient(values, token);
+        await createPatient(values);
         toast.success("Danışan eklendi");
       }
 

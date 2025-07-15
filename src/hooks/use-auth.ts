@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthCookie, removeAuthCookie } from "@/lib/auth-cookies";
+import { tokenService } from "@/lib/token-service";
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -10,7 +10,7 @@ export const useAuth = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const authToken = getAuthCookie();
+    const authToken = tokenService.getAccessToken();
     if (authToken) {
       setToken(authToken);
       setIsAuthenticated(true);
@@ -20,7 +20,7 @@ export const useAuth = () => {
   }, []);
 
   const logout = () => {
-    removeAuthCookie();
+    tokenService.clearTokens();
     setToken(null);
     setIsAuthenticated(false);
     router.push("/auth/login");

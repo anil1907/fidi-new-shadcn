@@ -23,10 +23,7 @@ export function PatientDialog({ open, onOpenChange, patient }: Props) {
     if (!patient?.id) return;
 
     try {
-      const token = localStorage.getItem("auth-token");
-      if (!token) throw new Error("Token eksik");
-
-      await deletePatient(patient.id, token);
+      await deletePatient(patient.id);
       toast.success("Danışan silindi");
       onOpenChange(false);
     } catch (err: any) {

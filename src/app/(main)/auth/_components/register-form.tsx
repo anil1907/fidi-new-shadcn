@@ -10,7 +10,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { registerSchema, RegisterFormData } from "@/lib/auth-schemas";
 import { authService } from "@/lib/auth-service";
-import { setAuthCookie } from "@/lib/auth-cookies";
 
 export function RegisterForm() {
   const router = useRouter();

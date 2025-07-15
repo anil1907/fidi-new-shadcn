@@ -1,13 +1,6 @@
-import axios from "axios";
-import { APP_CONFIG } from "@/config/app-config";
-import { LoginFormData, RegisterFormData } from "./auth-schemas";
-
-const api = axios.create({
-  baseURL: APP_CONFIG.api.baseUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import axios from 'axios';
+import { LoginFormData, RegisterFormData } from './auth-schemas';
+import api from './axios';
 
 export interface AuthResponse {
   success?: boolean; // opsiyonel, backend döndürmüyor olabilir
@@ -46,6 +39,20 @@ export const authService = {
         throw new Error(error.response.data.message);
       }
       throw new Error("Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+  },
+
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    try {
+      const response = await api.post<AuthResponse>('/refresh', {
+        refreshToken,
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Token yenilenemedi');
     }
   },
 };
