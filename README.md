@@ -107,3 +107,71 @@ Feel free to open issues, feature requests, or start a discussion if you'd like 
 <br />
 
 **Happy Vibe Coding!**
+
+# Fidi UI - Studio Admin Template
+
+Modern, open-source dashboard starter template built with Next.js 15, Tailwind CSS v4, and shadcn/ui.
+
+## 🔐 Authentication System
+
+This project includes a complete authentication system with the following features:
+
+### Features
+- **Login & Register Pages**: Full-featured authentication forms with validation
+- **JWT Token Management**: Secure token storage in HTTP-only style cookies
+- **Form Validation**: Client-side validation using Zod schemas
+- **Error Handling**: User-friendly error messages from API responses
+- **TypeScript**: Fully typed authentication flow
+- **Modern UI**: Beautiful forms using ShadCN UI components
+- **Hook Form**: React Hook Form integration for optimal performance
+
+### Pages
+- `/login` - User login page
+- `/register` - User registration page  
+- `/dashboard` - Protected dashboard page (requires authentication)
+
+### Demo Credentials
+For testing the authentication system:
+- **Email**: `demo@example.com`
+- **Password**: `123456`
+
+### API Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+
+### Configuration
+The API base URL can be configured via environment variables:
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
+```
+
+### Tech Stack
+- **Frontend**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS + ShadCN UI
+- **Forms**: React Hook Form + Zod validation
+- **HTTP Client**: Axios
+- **Authentication**: JWT tokens with secure cookie storage
+
+### Security Features
+- Secure cookie storage with `max-age`, `path`, `secure`, and `samesite` flags
+- Client-side and server-side validation
+- Protected routes with automatic redirection
+- Token expiration handling
+
+### Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
+
+3. Navigate to `http://localhost:3000/login` to test the authentication system.
+
+---
+
+*Perfect for SaaS apps, admin panels, and internal tools—fully customizable and production-ready.*

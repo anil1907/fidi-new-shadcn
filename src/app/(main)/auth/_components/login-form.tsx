@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -9,14 +11,19 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { loginSchema, LoginFormData } from "@/lib/auth-schemas";
+import { authService } from "@/lib/auth-service";
+import { setAuthCookie } from "@/lib/auth-cookies";
 
-const FormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+const FormSchema = loginSchema.extend({
   remember: z.boolean().optional(),
 });
 
 export function LoginForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -27,18 +34,38 @@ export function LoginForm() {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await authService.login({
+        email: data.email,
+        password: data.password,
+      });
+      if (response.success !== false && response.accessToken) {
+        setAuthCookie(
+          response.accessToken,
+          response.refreshToken,
+          response.tokenType,
+          response.expiresIn
+        );
+        toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
+        router.push("/dashboard");
+      } else {
+        setError(response.message || "Giriş yapılamadı");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bir hata oluştu");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {error && (
+          <div className="rounded-md bg-red-100 px-3 py-2 text-sm text-red-700">{error}</div>
+        )}
         <FormField
           control={form.control}
           name="email"
@@ -46,7 +73,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input id="email" type="email" placeholder="you@example.com" autoComplete="email" {...field} />
+                <Input id="email" type="email" placeholder="you@example.com" autoComplete="email" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,6 +92,7 @@ export function LoginForm() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                   {...field}
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />
@@ -82,6 +110,7 @@ export function LoginForm() {
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   className="size-4"
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormLabel htmlFor="login-remember" className="text-muted-foreground ml-1 text-sm font-medium">
@@ -90,8 +119,8 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
-          Login
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? "Giriş yapılıyor..." : "Login"}
         </Button>
       </form>
     </Form>
