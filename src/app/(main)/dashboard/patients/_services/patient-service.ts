@@ -2,8 +2,8 @@ import { APP_CONFIG } from "@/config/app-config";
 
 const BASE_URL = `${APP_CONFIG.api.baseUrl}/patients`;
 
-export async function getPatients(token: string) {
-  const res = await fetch(`${BASE_URL}?PageNumber=1&PageSize=10`, {
+export async function getPatients(token: string, page = 1) {
+  const res = await fetch(`${BASE_URL}?PageNumber=${page}&PageSize=9`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",

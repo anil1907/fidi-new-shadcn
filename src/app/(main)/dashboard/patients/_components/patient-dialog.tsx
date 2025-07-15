@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PatientForm } from "./patient-form";
-import { toast } from "sonner";
-import { deletePatient } from "../_services/patient-service";
-import { getAuthCookie } from "@/lib/auth-cookies";
+import { ConfirmDelete } from "@/components/confirm-delete";
+import { notifySuccess, notifyError } from "@/lib/toast";
+import { usePatientMutations } from "@/hooks/use-patients";
 
 interface Props {
   open: boolean;
@@ -20,18 +14,16 @@ interface Props {
 }
 
 export function PatientDialog({ open, onOpenChange, patient }: Props) {
+  const { remove } = usePatientMutations();
+
   const handleDelete = async () => {
     if (!patient?.id) return;
-
     try {
-      const token = getAuthCookie();
-      if (!token) return;
-
-      await deletePatient(patient.id, token);
-      toast.success("Danışan silindi");
+      await remove.mutateAsync(patient.id);
+      notifySuccess("Danışan silindi");
       onOpenChange(false);
     } catch (err: any) {
-      toast.error(err.message ?? "Silme işlemi başarısız");
+      notifyError(err.message ?? "Silme işlemi başarısız");
     }
   };
 
@@ -46,13 +38,11 @@ export function PatientDialog({ open, onOpenChange, patient }: Props) {
 
         {patient && (
           <DialogFooter className="justify-start">
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              className="mt-2"
-            >
-              Danışanı Sil
-            </Button>
+            <ConfirmDelete onConfirm={handleDelete}>
+              <Button variant="destructive" className="mt-2">
+                Danışanı Sil
+              </Button>
+            </ConfirmDelete>
           </DialogFooter>
         )}
       </DialogContent>
